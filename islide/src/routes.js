@@ -6,12 +6,12 @@ const readdir = util.promisify(fs.readdir);
 
 async function getSlides(allFiles = []) {
   const dirname = 'dist/slides';
-  console.log('hey');
   const url = 'slides';
   const files = (await readdir(dirname)).map(file => {
     return path.join(url, file);
   });
   allFiles.push(...files);
+  console.log('files', allFiles);
   return allFiles;
 }
 
@@ -22,19 +22,19 @@ module.exports = function(app) {
     await res.end(JSON.stringify(data));
   });
 
-  app.get('/screen', function(req, res) {
+  app.get('/remote', function(req, res) {
     if (process.env.ENV === 'dev') {
-      res.sendFile(path.join(__dirname, '../../iscreen/build', 'index.html'));
+      res.sendFile(path.join(__dirname, '../dist/remote', 'index.html'));
     } else if (process.env.ENV === 'int') {
-      res.sendFile(__dirname + '/dist/screen/index.html');
+      res.sendFile(__dirname, '../dist/remote/index.html');
     }
   });
 
   app.get('*', function(req, res) {
     if (process.env.ENV === 'dev') {
-      res.sendFile(path.join(__dirname, '../../iremote/build', 'index.html'));
+      res.sendFile(path.join(__dirname, '../dist/screen', 'index.html'));
     } else if (process.env.ENV === 'int') {
-      res.sendFile(__dirname + '/dist/remote/index.html');
+      res.sendFile(__dirname, '../dist/screen/index.html');
     }
   });
 };
