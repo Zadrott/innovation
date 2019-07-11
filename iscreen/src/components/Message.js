@@ -6,6 +6,7 @@ import questionMark from '../assets/help.svg';
 const colors = {
   green: 'rgb( 3, 178, 141 )',
   gray: 'rgb( 90, 90, 90 )',
+  white: 'white',
 };
 
 type Props = {
@@ -48,8 +49,13 @@ class Message extends React.Component<Props, State> {
   };
 
   renderHeader = () => {
+    const infos = `Poser une question`;
     return (
-      <Header>
+      <Header
+        onClick={() =>
+          this.setState(prevState => ({isOpen: !prevState.isOpen}))
+        }>
+        <Infos>{infos}</Infos>
         <Icon>
           <QuestionIcon />
         </Icon>
@@ -58,10 +64,8 @@ class Message extends React.Component<Props, State> {
   };
 
   renderMain = (questions: Array<string>) => {
-    const infos = `Bonjour, vous pouvez poser une question en direct`;
     return (
       <Main>
-        <Infos>{infos}</Infos>
         <Questions>
           {questions.map((question, index) => (
             <Question key={index.toString()}>{question}</Question>
@@ -89,9 +93,9 @@ class Message extends React.Component<Props, State> {
   };
 
   render() {
-    const {message, questions} = this.state;
+    const {message, questions, isOpen} = this.state;
     return (
-      <RootStyled>
+      <RootStyled isOpen={isOpen}>
         {this.renderHeader()}
         {this.renderMain(questions)}
         {this.renderFooter(message)}
@@ -115,10 +119,9 @@ const Input = styled.input`
 `;
 
 const Infos = styled.div`
-  color: ${colors.gray};
-  border-bottom: 1px solid ${colors.gray};
+  color: ${colors.white};
   padding: 8px;
-  margin: 8px;
+  // margin: 8px;
 `;
 
 const SendButton = styled.div`
@@ -138,12 +141,19 @@ const NChar = styled.div`
   padding: 8px;
 `;
 
+const HEADER_HEIGHT = 50;
+
 const Header = styled.div`
+  display: flex;
+  align-items: center;
+
   position: relative;
-  height: 50px;
+  height: ${HEADER_HEIGHT}px;
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   background: ${colors.green};
+
+  cursor: pointer;
 `;
 
 const Main = styled.div`
@@ -187,16 +197,22 @@ const Icon = styled.div`
   user-select: none;
 `;
 
+const MESSAGE_HEIGHT = 300;
+
 const RootStyled = styled.div`
   display: flex;
   flex-direction: column;
 
   position: absolute;
   z-index: 999;
-  bottom: 0;
+  bottom: ${props => (props.isOpen ? 0 : -(MESSAGE_HEIGHT - HEADER_HEIGHT))}px;
   right: 0;
+
   width: 300px;
-  height: 300px;
+  height: ${MESSAGE_HEIGHT}px;
+
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+  transition: bottom 0.35s ease-in-out;
 `;
 
 export default Message;

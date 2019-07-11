@@ -82,15 +82,10 @@ class App extends React.Component<*, State> {
   };
 
   render() {
-    const {alpha, beta, gamma, currentIndex} = this.state;
+    const {currentIndex} = this.state;
     return (
       <RootStyled>
         <Remote requestIndex={this.requestIndex} currentIndex={currentIndex} />
-        <Container>
-          <span>alpha: {alpha && alpha.toFixed(2)}</span>
-          <span>beta: {beta && beta.toFixed(2)}</span>
-          <span>gamma: {gamma && gamma.toFixed(2)}</span>
-        </Container>
       </RootStyled>
     );
   }
@@ -106,12 +101,6 @@ const RootStyled = styled.div`
   justify-content: center;
   font-size: calc(10px + 2vmin);
   color: white;
-`;
-
-const Container = styled.div`
-  display: flex;
-  flex: 1;
-  flex-direction: column;
 `;
 
 export default App;

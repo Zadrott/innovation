@@ -4,6 +4,8 @@ module.exports = function(io) {
   const remote = io.of('/remote');
   const screen = io.of('/screen');
 
+  const QUESTIONS = [];
+
   remote.on('connection', function(socket) {
     console.log('new REMOTE connection' + socket.id);
     socket.emit('message', 'remote side.');
@@ -34,6 +36,8 @@ module.exports = function(io) {
     console.log('new SCREEN connection' + socket.id);
     socket.on('message', function(message) {
       console.log(message);
+      QUESTIONS.push(message);
+      screen.emit('questions', QUESTIONS);
     });
   });
 };

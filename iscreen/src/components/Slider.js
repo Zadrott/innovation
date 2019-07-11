@@ -3,6 +3,8 @@
 import * as React from 'react';
 import styled from '@emotion/styled';
 
+import Paging from './Paging';
+
 type ReactElement = React.Element;
 
 type Props = {
@@ -20,6 +22,10 @@ class Slider extends React.Component<Props> {
     ));
   };
 
+  renderPaging = (currentIndex, nSlides) => (
+    <Paging currentIndex={currentIndex} nSlides={nSlides} />
+  );
+
   render() {
     const {slides, index} = this.props;
     const nSlides = slides.length;
@@ -28,39 +34,38 @@ class Slider extends React.Component<Props> {
         <Scene index={index} sliderWidth={nSlides * 100}>
           {this.renderSlides(slides)}
         </Scene>
+        {this.renderPaging(index, nSlides)}
       </RootStyled>
     );
   }
 }
 
 const Slide = styled.div`
+  height: 100%;
   width: ${props => props.slideWidth}%;
-
   margin: 4px;
-
-  // background-color: blue;
 `;
 
 const Scene = styled.div`
 	position: relative;
 	left: ${props => -props.index * 100}%;
-  display: flex;
+	display: flex;
+	justify-content: center;
+	align-items: center;
   width: ${props => props.sliderWidth}%;
 	height: 100%;
 
 	transition: left 0.5s ease-in-out;
-	
   // transform: ${props => `translate3d(${props.x}px,${props.y}px,0)`};
 `;
 
 const RootStyled = styled.div`
-  height: 100%;
-  width: 100%;
-
   position: relative;
   z-index: 0;
 
-  background-color: red;
+  height: 100%;
+  width: 100%;
+  paddin-top: 75%;
 `;
 
 export default Slider;
