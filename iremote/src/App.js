@@ -1,10 +1,11 @@
 // @flow
 import React from 'react';
 import './App.css';
-import styled from '@emotion/styled';
 import socketIOClient from 'socket.io-client';
 
-import Remote from './components/Remote';
+import SlideController from './components/Remote';
+import PointerController from './components/PointerController';
+import {ReactComponent as Islide} from './icons/iSlide_bleu.svg';
 
 type DeviceOrientationEvent = {
   alpha: number,
@@ -18,6 +19,7 @@ type State = {
   beta: ?number,
   gamma: ?number,
   currentIndex: number,
+  isPointerDisplayed: boolean,
 };
 
 class App extends React.Component<*, State> {
@@ -27,6 +29,7 @@ class App extends React.Component<*, State> {
     gamma: null,
     initialOffset: null,
     currentIndex: 0,
+    isPointerDisplayed: false,
   };
 
   initialOffset: ?number = null;
@@ -81,26 +84,28 @@ class App extends React.Component<*, State> {
     });
   };
 
+  displayPointer = (display: boolean) => {
+    this.socket.emit('displayPointer', {
+      display: display,
+    });
+    this.setState({
+      isPointerDisplayed: display,
+    });
+  };
+
   render() {
     const {currentIndex} = this.state;
     return (
-      <RootStyled>
-        <Remote requestIndex={this.requestIndex} currentIndex={currentIndex} />
-      </RootStyled>
+      <div className="App">
+        <SlideController
+          requestIndex={this.requestIndex}
+          currentIndex={currentIndex}
+        />
+        <PointerController displayPointer={this.displayPointer} />
+        <Islide/>
+      </div>
     );
   }
 }
-
-const RootStyled = styled.div`
-  height: 100%;
-  text-align: center;
-  background-color: #282c34;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-`;
 
 export default App;
