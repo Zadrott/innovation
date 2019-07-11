@@ -21,6 +21,7 @@ class App extends React.Component {
     screenWidth: 0,
     screenHeight: 0,
     slideIndex: 0,
+    isPointerDisplayed: false,
     questions: [],
   };
 
@@ -44,6 +45,10 @@ class App extends React.Component {
 
     this.socket.on('slideIndex', data => {
       this.setState({slideIndex: data});
+    });
+
+    this.socket.on('display', data => {
+      this.setState({ isPointerDisplayed: data.display });
     });
   }
 
@@ -85,10 +90,14 @@ class App extends React.Component {
     return <Slider index={slideIndex} slides={slidesWithQuestions} />;
   };
 
-  renderScreen = (slideIndex, i_x, i_y, questions) => {
+  renderScreen = (slideIndex, i_x, i_y, questions, isPointerDisplayed) => {
     return (
       <Screen ref={this.screenRef}>
-        <Cursor x={i_x} y={i_y} />
+        {isPointerDisplayed && (
+          <Cursor x={i_x} y={i_y}>
+            <Aim />
+          </Cursor>
+        )}
         <SliderApi>
           {slides => this.renderSlider(slides, slideIndex, questions)}
         </SliderApi>
@@ -106,7 +115,7 @@ class App extends React.Component {
   );
 
   renderMonitoring = (alpha, beta, gamma, x, y) => {
-    return <Monitoring infos={{alpha, beta, gamma, x, y}}></Monitoring>;
+    return <Monitoring infos={{alpha, beta, gamma, x, y}}/>;
   };
 
   render() {
@@ -119,6 +128,7 @@ class App extends React.Component {
       screenWidth,
       screenHeight,
       slideIndex,
+      isPointerDisplayed,
       questions,
     } = this.state;
     const i_x = (screenWidth * x) / 200 + screenWidth / 2;
@@ -126,7 +136,7 @@ class App extends React.Component {
 
     return (
       <RootStyled>
-        {this.renderScreen(slideIndex, i_x, i_y, questions)}
+        {this.renderScreen(slideIndex, i_x, i_y, questions, isPointerDisplayed)}
         {this.renderMonitoring(alpha, beta, gamma, x, y)}
         {this.renderMessage()}
       </RootStyled>
@@ -141,6 +151,9 @@ const Slide = styled.div`
   height: 100%;
   background-size: cover;
   background-image: url(${props => props.slideBackground});
+  border-radius: 15px;
+  border: 1px solid #9999ff;
+  box-shadow: 2px 5px 5px #ccccff;
 `;
 
 const Cursor = styled.div`
@@ -148,12 +161,24 @@ const Cursor = styled.div`
   z-index: 999;
   top: 0;
   left: 0;
-  width: 20px;
-  height: 20px;
-  background: red;
+  width: 25px;
+  height: 25px;
+  background: black;
   border-radius: 100%;
   user-select: none;
   transform: ${props => `translate3d(${props.x}px,${props.y}px,0)`};
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const Aim = styled.div`
+  position: relative;
+  width: 15px;
+  height: 15px;
+  margin: 0 auto;
+  border-radius: 100%;
+  background: #9999ff;
 `;
 
 const Screen = styled.div`
@@ -165,7 +190,6 @@ const Screen = styled.div`
   width: calc(100% - 80px);
   height: calc(100% - 80px);
 
-  border: 4px solid #ccc;
   border-radius: 8px;
   box-sizing: border-box;
 `;

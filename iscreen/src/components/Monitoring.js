@@ -36,6 +36,8 @@ const RootStyled = styled.div`
   flex-direction: column;
   width: 84px;
   padding: 4px;
+  right: 10px;
+  width: 100px;
   color: white;
   background: rgba(0, 0, 0, 0.6);
   font-size: small;
