@@ -3,22 +3,18 @@ import './App.css';
 import styled from '@emotion/styled';
 import socketIOClient from 'socket.io-client';
 
-// import Carousel from './components/Carousel';
 import SliderApi from './containers/SliderApi';
 import Slider from './components/Slider';
-// import slide1 from './assets/1.jpg';
-// import slide2 from './assets/2.jpg';
-// import slide3 from './assets/3.jpg';
-// import slide4 from './assets/4.jpg';
-// import slide5 from './assets/5.jpg';
+import Message from './components/Message';
+import Monitoring from './components/Monitoring';
 
 class App extends React.Component {
   state = {
     alpha: null,
     beta: null,
     gamma: null,
-    x: 0,
-    y: 0,
+    x: 20,
+    y: 20,
     windowHeight: window.innerHeight,
     windowWidth: window.innerWidth,
     hasWindowResized: false,
@@ -41,8 +37,6 @@ class App extends React.Component {
     });
 
     this.socket.on('slideIndex', data => {
-      // const {index} = data;
-      console.log('iscreen', data);
       this.setState({slideIndex: data});
     });
   }
@@ -63,7 +57,6 @@ class App extends React.Component {
   };
 
   updateWindowDimensions = () => {
-    console.log('update');
     this.setState(
       {
         windowHeight: window.innerHeight,
@@ -73,18 +66,38 @@ class App extends React.Component {
     );
   };
 
-  // getSlides = () => {
-  // const slides = [
-  // {id: 1, url: slide1},
-  // {id: 2, url: slide2},
-  // {id: 3, url: slide3},
-  // {id: 4, url: slide4},
-  // {id: 5, url: slide5},
-  // ];
-  // return slides.map((slide, index) => (
-  // <Slide key={index.toString()} slideBackground={slide.url} />
-  // ));
-  // };
+  renderSlider = (slides, slideIndex) => {
+    return (
+      <Slider
+        index={slideIndex}
+        slides={slides.map(slide => (
+          <Slide key={slide} slideBackground={slide} />
+        ))}
+      />
+    );
+  };
+
+  renderScreen = (slideIndex, i_x, i_y) => {
+    return (
+      <Screen ref={this.screenRef}>
+        <Cursor x={i_x} y={i_y} />
+        <SliderApi>{slides => this.renderSlider(slides, slideIndex)}</SliderApi>
+      </Screen>
+    );
+  };
+
+  renderMessage = () => (
+    <Message
+      sendMessage={message => {
+        console.log(message);
+        this.socket.emit('message', {message: message});
+      }}
+    />
+  );
+
+  renderMonitoring = (alpha, beta, gamma, x, y) => {
+    return <Monitoring infos={{alpha, beta, gamma, x, y}}></Monitoring>;
+  };
 
   render() {
     const {
@@ -102,26 +115,9 @@ class App extends React.Component {
 
     return (
       <RootStyled>
-        <Screen ref={this.screenRef}>
-          <Cursor x={i_x} y={i_y} />
-          <SliderApi>
-            {slides => (
-              <Slider
-                index={slideIndex}
-                slides={slides.map(slide => (
-                  <Slide key={slide} slideBackground={slide} />
-                ))}
-              />
-            )}
-          </SliderApi>
-        </Screen>
-        <Monitoring>
-          <span>alpha: {alpha}</span>
-          <span>beta: {beta}</span>
-          <span>gamma: {gamma}</span>
-          <span>x: {x.toFixed(2)}</span>
-          <span>y: {y.toFixed(2)}</span>
-        </Monitoring>
+        {this.renderScreen(slideIndex, i_x, i_y)}
+        {this.renderMonitoring(alpha, beta, gamma, x, y)}
+        {this.renderMessage()}
       </RootStyled>
     );
   }
@@ -131,17 +127,6 @@ const Slide = styled.div`
   height: 100%;
   background-size: cover;
   background-image: url(${props => props.slideBackground});
-`;
-
-const Monitoring = styled.div`
-  position: absolute;
-  bottom: 10px;
-  right: 10px;
-  display: flex;
-  flex-direction: column;
-  width: 100px;
-  color: white;
-  background: rgba(0, 0, 0, 0.6);
 `;
 
 const Cursor = styled.div`
@@ -177,7 +162,6 @@ const RootStyled = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  // background-color: ;
 `;
 
 export default App;

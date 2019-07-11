@@ -16,7 +16,7 @@ class Gyroplane {
   }
 
   static getX(alpha) {
-    var MAX_X_ANGLE = 10;
+    const MAX_X_ANGLE = 10;
 
     // Left/right rotation.
     if (alpha > 360 - MAX_X_ANGLE) {

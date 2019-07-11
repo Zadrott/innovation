@@ -1,21 +1,21 @@
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-var express = require('express');
-var socketIO = require('socket.io');
-var path = require('path');
+const express = require('express');
+const socketIO = require('socket.io');
+const path = require('path');
 
-var setup = require('./src/setup');
-var routes = require('./src/routes');
-var socket = require('./src/socket');
+const setup = require('./src/setup');
+const routes = require('./src/routes');
+const socket = require('./src/socket');
 
-var app = express();
+const app = express();
 
 app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static(path.join(__dirname, 'dist', 'screen')));
 app.use(express.static(path.join(__dirname, 'dist', 'remote')));
 
-var server = setup(app);
+const server = setup(app);
 
-var io = socketIO(server);
+const io = socketIO(server);
 routes(app);
 socket(io);
 

@@ -1,9 +1,9 @@
-var express = require('express');
-var fs = require('fs');
-var https = require('https');
+const express = require('express');
+const fs = require('fs');
+const https = require('https');
 
 module.exports = function(app) {
-  var options = {
+  const options = {
     key: fs.readFileSync('./file.pem'),
     cert: fs.readFileSync('./file.crt'),
   };

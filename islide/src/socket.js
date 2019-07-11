@@ -1,7 +1,5 @@
 const {Gyroplane} = require('./gyroplane');
 
-console.log(Gyroplane);
-
 module.exports = function(io) {
   const remote = io.of('/remote');
   const screen = io.of('/screen');
@@ -34,6 +32,8 @@ module.exports = function(io) {
 
   screen.on('connection', function(socket) {
     console.log('new SCREEN connection' + socket.id);
-    socket.emit('message', 'screen side');
+    socket.on('message', function(message) {
+      console.log(message);
+    });
   });
 };

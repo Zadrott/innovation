@@ -1,6 +1,5 @@
 const fs = require('fs');
-var path = require('path');
-var path = require('path');
+const path = require('path');
 const util = require('util');
 const readdir = util.promisify(fs.readdir);
 
