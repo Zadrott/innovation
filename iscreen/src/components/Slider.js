@@ -26,12 +26,22 @@ class Slider extends React.Component<Props> {
     <Paging currentIndex={currentIndex} nSlides={nSlides} />
   );
 
+  onIndexChange= (index,nSlides) => {
+    if(index> nSlides){
+      return nSlides
+    }
+    if(index < 0){
+      return 0
+    }
+    return index
+  }
+
   render() {
     const {slides, index} = this.props;
     const nSlides = slides.length;
     return (
       <RootStyled>
-        <Scene index={index} sliderWidth={nSlides * 100}>
+        <Scene index={this.onIndexChange(index, nSlides)} sliderWidth={nSlides * 100}>
           {this.renderSlides(slides)}
         </Scene>
         {this.renderPaging(index, nSlides)}
@@ -49,8 +59,8 @@ const Slide = styled.div`
 const Scene = styled.div`
 	position: relative;
 	left: ${props => -props.index * 100}%;
-	display: flex;
-	justify-content: center;
+  display: flex;
+  justify-content: center;
 	align-items: center;
   width: ${props => props.sliderWidth}%;
 	height: 100%;

@@ -82,7 +82,7 @@ class App extends React.Component {
       <Slide key={slide} slideBackground={slide} />
     ));
     const questionsSlides = questions.map(question => (
-      <Slide key={question.message}>
+      <Slide key={question.message} slideBackground={'/slides/background.png'}>
         <span>{question.message}</span>
       </Slide>
     ));
