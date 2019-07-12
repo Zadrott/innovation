@@ -82,8 +82,8 @@ class App extends React.Component {
       <Slide key={slide} slideBackground={slide} />
     ));
     const questionsSlides = questions.map(question => (
-      <Slide key={question.message} slideBackground={'/slides/background.png'}>
-        <span>{question.message}</span>
+      <Slide key={question.message} slideBackground={'slides/background.png'}>
+        <Question>{question.message}</Question>
       </Slide>
     ));
     const slidesWithQuestions = [...slidesWithoutQuestions, ...questionsSlides];
@@ -201,5 +201,11 @@ const RootStyled = styled.div`
   align-items: center;
   justify-content: center;
 `;
+
+const Question = styled.div`
+font-size: 50px;
+color: white;
+padding: 30px;
+`
 
 export default App;

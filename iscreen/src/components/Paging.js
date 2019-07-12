@@ -20,8 +20,8 @@ const RootStyled = styled.div`
   flex-direction: column;
 
   position: absolute;
-  top: 50px;
-  right: 50px;
+  top: 140px;
+  right: 30px;
   width: 100px;
   text-align:center;
 
